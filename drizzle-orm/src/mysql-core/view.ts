@@ -67,7 +67,7 @@ export class ViewBuilder<TName extends string = string> extends ViewBuilderCore<
 	static readonly [entityKind]: string = 'MySqlViewBuilder';
 
 	as<TSelectedFields extends SelectedFields>(
-		qb: TypedQueryBuilder<TSelectedFields> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelectedFields>),
+		qb: TypedQueryBuilder<TSelectedFields, unknown> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelectedFields, unknown>),
 	): MySqlViewWithSelection<TName, false, AddAliasToSelection<TSelectedFields, TName, 'mysql'>> {
 		if (typeof qb === 'function') {
 			qb = qb(new QueryBuilder());

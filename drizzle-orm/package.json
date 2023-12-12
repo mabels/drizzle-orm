@@ -133,6 +133,7 @@
     "@types/better-sqlite3": "^7.6.4",
     "@types/node": "^20.2.5",
     "@types/pg": "^8.10.1",
+    "@types/pg-cursor": "^2.7.2",
     "@types/sql.js": "^1.4.4",
     "@vercel/postgres": "^0.3.0",
     "better-sqlite3": "^8.4.0",
@@ -151,5 +152,8 @@
     "vitest": "^0.31.4",
     "zod": "^3.20.2",
     "zx": "^7.2.2"
+  },
+  "dependencies": {
+    "pg-cursor": "^2.10.3"
   }
 }

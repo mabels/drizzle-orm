@@ -16,12 +16,16 @@ import type { SelectedFieldsOrdered } from '~/pg-core/query-builders/select.type
 import type { PgTransactionConfig, PreparedQueryConfig, QueryResultHKT } from '~/pg-core/session.ts';
 import { PgSession, PreparedQuery } from '~/pg-core/session.ts';
 import type { RelationalSchemaConfig, TablesRelationalConfig } from '~/relations.ts';
+import type { SelectAsyncGenerator } from '~/select-iterator';
 import { fillPlaceholders, type Query, sql } from '~/sql/sql.ts';
 import { type Assume, mapResultRow } from '~/utils.ts';
 
 export type NeonClient = Pool | PoolClient | Client;
 
 export class NeonPreparedQuery<T extends PreparedQueryConfig> extends PreparedQuery<T> {
+	override iterator(): SelectAsyncGenerator<T['iterator']> {
+		throw new Error('Method not implemented.');
+	}
 	static readonly [entityKind]: string = 'NeonPreparedQuery';
 
 	private rawQuery: QueryConfig;
@@ -55,7 +59,7 @@ export class NeonPreparedQuery<T extends PreparedQueryConfig> extends PreparedQu
 
 		const { fields, client, rawQuery, query, joinsNotNullableMap, customResultMapper } = this;
 		if (!fields && !customResultMapper) {
-			return client.query(rawQuery, params);
+			return client.query(rawQuery, params) as unknown as Promise<T['execute']>;
 		}
 
 		const result = await client.query(query, params);

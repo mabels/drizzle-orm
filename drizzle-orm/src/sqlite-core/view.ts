@@ -40,7 +40,7 @@ export class ViewBuilder<TName extends string = string> extends ViewBuilderCore<
 	static readonly [entityKind]: string = 'SQLiteViewBuilder';
 
 	as<TSelection extends SelectedFields>(
-		qb: TypedQueryBuilder<TSelection> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelection>),
+		qb: TypedQueryBuilder<TSelection, unknown> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelection, unknown>),
 	): SQLiteViewWithSelection<TName, false, AddAliasToSelection<TSelection, TName, 'sqlite'>> {
 		if (typeof qb === 'function') {
 			qb = qb(new QueryBuilder());

@@ -101,6 +101,7 @@ export type PgJoin<
 			T['_']['selectMode'] extends 'partial' ? T['_']['selectMode'] : 'multiple',
 			AppendToNullabilityMap<T['_']['nullabilityMap'], TJoinedName, TJoinType>,
 			T['_']['dynamic'],
+			T['_']['dynamic'],
 			T['_']['excludedMethods']
 		>,
 		TDynamic,
@@ -150,7 +151,8 @@ export interface PgSelectHKTBase {
 	nullabilityMap: unknown;
 	dynamic: boolean;
 	excludedMethods: string;
-	result: unknown;
+	item: unknown;
+	result: unknown[];
 	selectedFields: unknown;
 	_type: unknown;
 }
@@ -163,6 +165,7 @@ export type PgSelectKind<
 	TNullabilityMap extends Record<string, JoinNullability>,
 	TDynamic extends boolean,
 	TExcludedMethods extends string,
+	TItem = SelectResult<TSelection, TSelectMode, TNullabilityMap>,
 	TResult = SelectResult<TSelection, TSelectMode, TNullabilityMap>[],
 	TSelectedFields = BuildSubquerySelection<TSelection, TNullabilityMap>,
 > = (T & {
@@ -172,6 +175,7 @@ export type PgSelectKind<
 	nullabilityMap: TNullabilityMap;
 	dynamic: TDynamic;
 	excludedMethods: TExcludedMethods;
+	item: TItem;
 	result: TResult;
 	selectedFields: TSelectedFields;
 })['_type'];
@@ -185,6 +189,7 @@ export interface PgSelectQueryBuilderHKT extends PgSelectHKTBase {
 		Assume<this['nullabilityMap'], Record<string, JoinNullability>>,
 		this['dynamic'],
 		this['excludedMethods'],
+		Assume<this['item'], any>,
 		Assume<this['result'], any[]>,
 		Assume<this['selectedFields'], ColumnsSelection>
 	>;
@@ -198,6 +203,7 @@ export interface PgSelectHKT extends PgSelectHKTBase {
 		Assume<this['nullabilityMap'], Record<string, JoinNullability>>,
 		this['dynamic'],
 		this['excludedMethods'],
+		Assume<this['item'], any>,
 		Assume<this['result'], any[]>,
 		Assume<this['selectedFields'], ColumnsSelection>
 	>;
@@ -235,6 +241,7 @@ export type PgSelectWithout<
 		T['_']['nullabilityMap'],
 		TDynamic,
 		TResetExcluded extends true ? K : T['_']['excludedMethods'] | K,
+		T['_']['item'],
 		T['_']['result'],
 		T['_']['selectedFields']
 	>,
@@ -244,6 +251,7 @@ export type PgSelectWithout<
 export type PgSelectPrepare<T extends AnyPgSelect> = PreparedQuery<
 	PreparedQueryConfig & {
 		execute: T['_']['result'];
+		iterator: T['_']['item'];
 	}
 >;
 
@@ -255,6 +263,7 @@ export type PgSelectDynamic<T extends AnyPgSelectQueryBuilder> = PgSelectKind<
 	T['_']['nullabilityMap'],
 	true,
 	never,
+	T['_']['item'],
 	T['_']['result'],
 	T['_']['selectedFields']
 >;
@@ -265,6 +274,7 @@ export type PgSelectQueryBuilder<
 	TSelection extends ColumnsSelection = ColumnsSelection,
 	TSelectMode extends SelectMode = SelectMode,
 	TNullabilityMap extends Record<string, JoinNullability> = Record<string, JoinNullability>,
+	TItem = unknown,
 	TResult extends any[] = unknown[],
 	TSelectedFields extends ColumnsSelection = ColumnsSelection,
 > = PgSelectQueryBuilderBase<
@@ -275,6 +285,7 @@ export type PgSelectQueryBuilder<
 	TNullabilityMap,
 	true,
 	never,
+	TItem,
 	TResult,
 	TSelectedFields
 >;
@@ -374,6 +385,7 @@ export type PgCreateSetOperatorFn = <
 		: {},
 	TDynamic extends boolean = false,
 	TExcludedMethods extends string = never,
+	TItem = SelectResult<TSelection, TSelectMode, TNullabilityMap>,
 	TResult extends any[] = SelectResult<TSelection, TSelectMode, TNullabilityMap>[],
 	TSelectedFields extends ColumnsSelection = BuildSubquerySelection<TSelection, TNullabilityMap>,
 >(
@@ -397,6 +409,7 @@ export type PgCreateSetOperatorFn = <
 		TNullabilityMap,
 		TDynamic,
 		TExcludedMethods,
+		TItem,
 		TResult,
 		TSelectedFields
 	>,

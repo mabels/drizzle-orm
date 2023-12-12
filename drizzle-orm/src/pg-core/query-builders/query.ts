@@ -84,7 +84,7 @@ export class PgRelationalQuery<TResult> extends QueryPromise<TResult> {
 		return tracer.startActiveSpan('drizzle.prepareQuery', () => {
 			const { query, builtQuery } = this._toSQL();
 
-			return this.session.prepareQuery<PreparedQueryConfig & { execute: TResult }>(
+			return this.session.prepareQuery<PreparedQueryConfig & { execute: TResult}>(
 				builtQuery,
 				undefined,
 				name,
@@ -93,9 +93,10 @@ export class PgRelationalQuery<TResult> extends QueryPromise<TResult> {
 						mapRelationalRow(this.schema, this.tableConfig, row, query.selection, mapColumnValue)
 					);
 					if (this.mode === 'first') {
-						return rows[0] as TResult;
+						throw new Error('not implemented');
+						// return rows[0] as TResult;
 					}
-					return rows as TResult;
+					return rows as unknown[] & TResult;
 				},
 			);
 		});

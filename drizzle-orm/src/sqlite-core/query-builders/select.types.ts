@@ -130,6 +130,7 @@ export interface SQLiteSelectHKTBase {
 	nullabilityMap: unknown;
 	dynamic: boolean;
 	excludedMethods: string;
+	item: unknown;
 	result: unknown;
 	selectedFields: unknown;
 	_type: unknown;
@@ -145,6 +146,7 @@ export type SQLiteSelectKind<
 	TNullabilityMap extends Record<string, JoinNullability>,
 	TDynamic extends boolean,
 	TExcludedMethods extends string,
+	TItem = SelectResult<TSelection, TSelectMode, TNullabilityMap>,
 	TResult = SelectResult<TSelection, TSelectMode, TNullabilityMap>[],
 	TSelectedFields = BuildSubquerySelection<TSelection, TNullabilityMap>,
 > = (T & {
@@ -156,6 +158,7 @@ export type SQLiteSelectKind<
 	nullabilityMap: TNullabilityMap;
 	dynamic: TDynamic;
 	excludedMethods: TExcludedMethods;
+	item: TItem,
 	result: TResult;
 	selectedFields: TSelectedFields;
 })['_type'];
@@ -171,6 +174,7 @@ export interface SQLiteSelectQueryBuilderHKT extends SQLiteSelectHKTBase {
 		Assume<this['nullabilityMap'], Record<string, JoinNullability>>,
 		this['dynamic'],
 		this['excludedMethods'],
+		Assume<this['item'], any>,
 		Assume<this['result'], any[]>,
 		Assume<this['selectedFields'], ColumnsSelection>
 	>;
@@ -186,6 +190,7 @@ export interface SQLiteSelectHKT extends SQLiteSelectHKTBase {
 		Assume<this['nullabilityMap'], Record<string, JoinNullability>>,
 		this['dynamic'],
 		this['excludedMethods'],
+		Assume<this['item'], any>,
 		Assume<this['result'], any[]>,
 		Assume<this['selectedFields'], ColumnsSelection>
 	>;
@@ -281,6 +286,7 @@ export type SQLiteSelectQueryBuilder<
 	TSelection extends ColumnsSelection = ColumnsSelection,
 	TSelectMode extends SelectMode = SelectMode,
 	TNullabilityMap extends Record<string, JoinNullability> = Record<string, JoinNullability>,
+	TItem = unknown,
 	TResult extends any[] = unknown[],
 	TSelectedFields extends ColumnsSelection = ColumnsSelection,
 > = SQLiteSelectQueryBuilderBase<
@@ -293,6 +299,7 @@ export type SQLiteSelectQueryBuilder<
 	TNullabilityMap,
 	true,
 	never,
+	TItem,
 	TResult,
 	TSelectedFields
 >;
@@ -323,6 +330,7 @@ export interface SQLiteSetOperatorInterface<
 		: {},
 	TDynamic extends boolean = false,
 	TExcludedMethods extends string = never,
+	TItem = SelectResult<TSelection, TSelectMode, TNullabilityMap>,
 	TResult extends any[] = SelectResult<TSelection, TSelectMode, TNullabilityMap>[],
 	TSelectedFields extends ColumnsSelection = BuildSubquerySelection<TSelection, TNullabilityMap>,
 > {
@@ -336,6 +344,7 @@ export interface SQLiteSetOperatorInterface<
 		readonly nullabilityMap: TNullabilityMap;
 		readonly dynamic: TDynamic;
 		readonly excludedMethods: TExcludedMethods;
+		readonly item: TItem;
 		readonly result: TResult;
 		readonly selectedFields: TSelectedFields;
 	};
@@ -386,7 +395,7 @@ export type SQLiteSetOperator<
 export type SetOperatorRightSelect<
 	TValue extends SQLiteSetOperatorWithResult<TResult>,
 	TResult extends any[],
-> = TValue extends SQLiteSetOperatorInterface<any, any, any, any, any, any, any, any, infer TValueResult, any>
+> = TValue extends SQLiteSetOperatorInterface<any, any, any, any, any, any, any, any, infer TValueResult, infer TValueResult, any>
 	? ValidateShape<
 		TValueResult[number],
 		TResult[number],
@@ -398,7 +407,7 @@ export type SetOperatorRestSelect<
 	TValue extends readonly SQLiteSetOperatorWithResult<TResult>[],
 	TResult extends any[],
 > = TValue extends [infer First, ...infer Rest]
-	? First extends SQLiteSetOperatorInterface<any, any, any, any, any, any, any, any, infer TValueResult, any>
+	? First extends SQLiteSetOperatorInterface<any, any, any, any, any, any, any, any, infer TValueResult, infer TValueResult, any>
 		? Rest extends AnySQLiteSetOperatorInterface[] ? [
 				ValidateShape<TValueResult[number], TResult[number], TypedQueryBuilder<any, TValueResult>>,
 				...SetOperatorRestSelect<Rest, TResult>,
@@ -419,6 +428,7 @@ export type SQLiteCreateSetOperatorFn = <
 		: {},
 	TDynamic extends boolean = false,
 	TExcludedMethods extends string = never,
+	TItem = SelectResult<TSelection, TSelectMode, TNullabilityMap>,
 	TResult extends any[] = SelectResult<TSelection, TSelectMode, TNullabilityMap>[],
 	TSelectedFields extends ColumnsSelection = BuildSubquerySelection<TSelection, TNullabilityMap>,
 >(
@@ -431,6 +441,7 @@ export type SQLiteCreateSetOperatorFn = <
 		TNullabilityMap,
 		TDynamic,
 		TExcludedMethods,
+		TItem,
 		TResult,
 		TSelectedFields
 	>,
@@ -446,6 +457,7 @@ export type SQLiteCreateSetOperatorFn = <
 		TNullabilityMap,
 		TDynamic,
 		TExcludedMethods,
+		TItem,
 		TResult,
 		TSelectedFields
 	>,

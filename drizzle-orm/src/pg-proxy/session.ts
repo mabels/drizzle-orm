@@ -11,6 +11,7 @@ import { fillPlaceholders, type Query } from '~/sql/sql.ts';
 import { tracer } from '~/tracing.ts';
 import { type Assume, mapResultRow } from '~/utils.ts';
 import type { RemoteCallback } from './driver.ts';
+import type { SelectAsyncGenerator } from '~/select-iterator.ts';
 
 export interface PgRemoteSessionOptions {
 	logger?: Logger;
@@ -65,6 +66,9 @@ export class PgProxyTransaction<
 }
 
 export class PreparedQuery<T extends PreparedQueryConfig> extends PreparedQueryBase<T> {
+	override iterator(): SelectAsyncGenerator<T['iterator']> {
+		throw new Error('Method not implemented.');
+	}
 	static readonly [entityKind]: string = 'PgProxyPreparedQuery';
 
 	constructor(
@@ -117,7 +121,9 @@ export class PreparedQuery<T extends PreparedQueryConfig> extends PreparedQueryB
 		});
 	}
 
-	async all() {}
+	async all(): Promise<T['all']> {
+		throw new Error('Method not implemented.');
+	}
 }
 
 export interface PgRemoteQueryResultHKT extends QueryResultHKT {

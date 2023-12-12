@@ -21,10 +21,16 @@ import type { RelationalSchemaConfig, TablesRelationalConfig } from '~/relations
 import { fillPlaceholders, type QueryTypingsValue, type QueryWithTypings, type SQL, sql } from '~/sql/sql.ts';
 import { mapResultRow } from '~/utils.ts';
 import { getValueFromDataApi, toValueParam } from '../common/index.ts';
+import type { SelectAsyncGenerator } from '~/select-iterator.ts';
 
 export type AwsDataApiClient = RDSDataClient;
 
 export class AwsDataApiPreparedQuery<T extends PreparedQueryConfig> extends PreparedQuery<T> {
+
+	override iterator(): SelectAsyncGenerator<T['iterator']> {
+		throw new Error('Method not implemented.');
+	}
+
 	static readonly [entityKind]: string = 'AwsDataApiPreparedQuery';
 
 	private rawQuery: ExecuteStatementCommand;

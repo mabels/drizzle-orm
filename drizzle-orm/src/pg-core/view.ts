@@ -45,7 +45,7 @@ export class ViewBuilder<TName extends string = string> extends DefaultViewBuild
 	static readonly [entityKind]: string = 'PgViewBuilder';
 
 	as<TSelectedFields extends SelectedFields>(
-		qb: TypedQueryBuilder<TSelectedFields> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelectedFields>),
+		qb: TypedQueryBuilder<TSelectedFields, unknown> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelectedFields, unknown>),
 	): PgViewWithSelection<TName, false, AddAliasToSelection<TSelectedFields, TName, 'pg'>> {
 		if (typeof qb === 'function') {
 			qb = qb(new QueryBuilder());
@@ -181,7 +181,7 @@ export class MaterializedViewBuilder<TName extends string = string>
 	static readonly [entityKind]: string = 'PgMaterializedViewBuilder';
 
 	as<TSelectedFields extends SelectedFields>(
-		qb: TypedQueryBuilder<TSelectedFields> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelectedFields>),
+		qb: TypedQueryBuilder<TSelectedFields, unknown> | ((qb: QueryBuilder) => TypedQueryBuilder<TSelectedFields, unknown>),
 	): PgMaterializedViewWithSelection<TName, false, AddAliasToSelection<TSelectedFields, TName, 'pg'>> {
 		if (typeof qb === 'function') {
 			qb = qb(new QueryBuilder());
